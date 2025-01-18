@@ -7,15 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<%
-	
-	String nome = request.getParameter("nome");
-	out.println("nome: "+ nome);
-	
-	String idade = request.getParameter("idade");
-	out.println("idade: " + idade);
-		
-	%>
+<h1>Tela principal após o login</h1>
 
 </body>
 </html>
