@@ -10,12 +10,16 @@ import model.ModelLogin;
 
 import java.io.IOException;
 
+import dao.DAOUsuarioRepository;
+
 
 @WebServlet("/ServletUsuarioController")
 public class ServletUsuarioController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     
+	private DAOUsuarioRepository daoUsuarioRepository = new DAOUsuarioRepository();
+	
     public ServletUsuarioController() {
 
     }
@@ -28,6 +32,8 @@ public class ServletUsuarioController extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
+		try {
+		
 		String id = request.getParameter("id");
 		String nome = request.getParameter("nome");
 		String email = request.getParameter("email");
@@ -41,9 +47,20 @@ public class ServletUsuarioController extends HttpServlet {
 		modelLogin.setLogin(login);
 		modelLogin.setSenha(senha);
 		
-		RequestDispatcher redireciona = request.getRequestDispatcher("principal/usuario.jsp");
-		redireciona.forward(request, response);
+		daoUsuarioRepository.gravarUsuario(modelLogin);
 		
+		
+		request.setAttribute("msg", "Operação realizada com sucesso!");
+		request.setAttribute("modolLogin", modelLogin);
+		request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+			RequestDispatcher redirecionar = request.getRequestDispatcher("erro.jsp");
+			request.setAttribute("msg", e.getMessage());
+			redirecionar.forward(request, response);
+	
+		}
 	}
 
 }
