@@ -35,10 +35,36 @@ public class ServletUsuarioController extends HttpServlet {
 				String idUser = request.getParameter("id");
 				daoUsuarioRepository.deletarUser(idUser);	
 					request.setAttribute("msg", "Excluido csom sucesso!");
+					
+					request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+					
 			
+		}else if(acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("deletarajax")) {
+				
+				String idUser = request.getParameter("id");
+				
+				daoUsuarioRepository.deletarUser(idUser);	
+				
+				response.getWriter().write("Excluido som sucesso!");
+				
 		}
 		
-		request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+		else if(acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarUserAjax")) {
+			
+			String nomeBusca = request.getParameter("nomeBusca");
+			System.out.println(nomeBusca);
+			
+			//daoUsuarioRepository.deletarUser(idUser);	
+			
+			//response.getWriter().write("Excluido som sucesso!");
+			
+	}
+		else {
+			request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+		}
+		
+		
+	
 		
 		}catch (Exception e) {
 			e.printStackTrace();
