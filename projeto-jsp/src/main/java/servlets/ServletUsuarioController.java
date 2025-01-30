@@ -9,6 +9,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.ModelLogin;
 
 import java.io.IOException;
+import java.util.List;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.DAOUsuarioRepository;
 
@@ -54,9 +58,14 @@ public class ServletUsuarioController extends HttpServlet {
 			String nomeBusca = request.getParameter("nomeBusca");
 			System.out.println(nomeBusca);
 			
-			//daoUsuarioRepository.deletarUser(idUser);	
+			List<ModelLogin> dadosJsonUser = daoUsuarioRepository.consultaUsuarioList(nomeBusca);
 			
-			//response.getWriter().write("Excluido som sucesso!");
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(dadosJsonUser);
+			response.getWriter().write(json);
+			
+			
+			
 			
 	}
 		else {
