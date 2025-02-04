@@ -58,12 +58,37 @@ public class DAOUsuarioRepository {
 		
 	}
 	
+public List<ModelLogin> consultaUsuarioList() throws Exception {
+		
+		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
+		
+		String sql = "select * from model_login where useradmin is false";
+		PreparedStatement statement = connection.prepareStatement(sql);
+		
+		ResultSet resultado = statement.executeQuery();
+		
+		while(resultado.next()) { // percorrrer as linhas de resultado do SQL
+			ModelLogin modelLogin = new ModelLogin();
+			modelLogin.setEmail(resultado.getString("email"));
+			modelLogin.setId(resultado.getLong("id"));
+			modelLogin.setLogin(resultado.getString("nome"));
+			modelLogin.setNome(resultado.getString("nome"));
+			//modelLogin.setSenha(resultado.getString("senha"));
+			
+			retorno.add(modelLogin);
+		}
+		
+		
+		
+		return retorno;
+	}
+	
 	
 	public List<ModelLogin> consultaUsuarioList(String nome) throws Exception {
 		
 		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
 		
-		String sql = "select * from model_login where upper(nome) like upper(?)";
+		String sql = "select * from model_login where upper(nome) like upper(?) and useradmin is false";
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, "%" + nome + "%");
 		
@@ -89,7 +114,7 @@ public class DAOUsuarioRepository {
 		
 		ModelLogin modelLogin = new ModelLogin(); 
 		
-		String sql = "select * from model_login where upper(login) = upper('"+login+"')";
+		String sql = "select * from model_login where upper(login) = upper('"+login+"') and useradmin is false";
 		PreparedStatement statement = connection.prepareStatement(sql);
 		
 		ResultSet resultado = statement.executeQuery();
@@ -109,7 +134,7 @@ public ModelLogin consultaUsuarioID(String id) throws Exception {
 		
 		ModelLogin modelLogin = new ModelLogin(); 
 		
-		String sql = "select * from model_login where id = ?";
+		String sql = "select * from model_login where id = ? and useradmin is false";
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setLong(1, Long.parseLong(id));
 		
@@ -140,7 +165,7 @@ public ModelLogin consultaUsuarioID(String id) throws Exception {
 	
 	public void deletarUser(String idUser) throws Exception {
 		
-		String sql = "DELETE FROM model_login WHERE id = ?;";
+		String sql = "DELETE FROM model_login WHERE id = ? and useradmin is false;";
 		
 		PreparedStatement prepareSql = connection.prepareStatement(sql);
 		
