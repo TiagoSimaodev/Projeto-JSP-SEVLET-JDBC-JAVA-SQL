@@ -7,10 +7,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import model.ModelLogin;
 
 import java.io.IOException;
 import java.util.List;
+
+import org.apache.tomcat.jakartaee.commons.compress.utils.IOUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -146,6 +151,24 @@ public class ServletUsuarioController extends ServletGenericUtil {
 		modelLogin.setPerfil(perfil);
 		modelLogin.setSexo(sexo);
 		
+		if(ServletFileUpload.isMultipartContent(request)) {
+			Part part = request.getPart("fileFoto"); //pega foto da tela
+			
+			if(part.getSize() > 0) {
+				
+				byte[] foto = IOUtils.toByteArray(part.getInputStream()); //converte imagem para byte 
+				String imagemBase64 = "data:image/"+ part.getContentType().split("\\/")[1] + ";base64," + new Base64().encodeBase64String(foto);
+				
+				modelLogin.setFotouser(imagemBase64);
+				modelLogin.setExtensaofotouser(part.getContentType().split("\\/")[1]);
+				
+				
+			}
+			
+			
+		
+		}
+		
 		if(daoUsuarioRepository.validarLogin(modelLogin.getLogin()) && modelLogin.getId() == null) {
 			msg = "Já existe usuário com o mesmo login, informe outro login";
 		}else {
@@ -161,7 +184,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 		
 		
 		List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
-		request.setAttribute("modelLogins", modelLogins);
+ 		request.setAttribute("modelLogins", modelLogins);
 		request.setAttribute("msg", msg);
 		request.setAttribute("modolLogin", modelLogin);
 		request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);

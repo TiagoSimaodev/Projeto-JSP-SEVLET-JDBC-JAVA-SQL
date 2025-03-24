@@ -60,9 +60,17 @@
                                                             
                                                             <div class="form-group form-default input-group mb-4">
                                                             	<div class="input-group-prepend">
-                                                            		<img alt="Imagem User" src="" width="70px">
+                                                            		<c:if test="${modolLogin.fotouser != '' && modolLogin.fotouser != null}">
+                                                            		<img alt="Imagem User" id="fotoembase64" src="${modolLogin.fotouser}" width="70px">
+                                                            		</c:if>
+                                                            		
+                                                            		
+                                                            		<c:if test="${modolLogin.fotouser == '' || modolLogin.fotouser == null}">
+                                                            		<img alt="Imagem User" id="fotoembase64"  src="assets/images/user.png" width="70px">
+                                                            		
+                                                            		</c:if>
                                                             	</div>
-                                                            	<input type="file" class="form-control-file" style="margin-top: 15p; margin-left: 5px;">
+                                                            	<input type="file" id="fileFoto" name="fileFoto" accept="image/*" onchange="visualizarImg('fotoembase64', 'fileFoto')" class="form-control-file" style="margin-top: 15px; margin-left: 5px;">
                                                             </div>
                                                             
                                                             <div class="form-group form-default form-static-label">
@@ -248,6 +256,28 @@
    
     
     <script type="text/javascript">
+    
+    
+    
+   
+    document.getElementById("fileFoto").addEventListener("change", function () {
+        var preview = document.getElementById("fotoembase64");
+        var file = this.files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+            preview.src = reader.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+        }
+    });
+   
+
+    
     
     function verEditar(id) {
 		
